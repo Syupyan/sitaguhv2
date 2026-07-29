@@ -1,235 +1,396 @@
+<div align="center">
+
+# 🚀 SITAGUH v2
+
+### CodeIgniter 3 · HMVC · Whoops Error Handler
+
+Modular PHP web application dengan arsitektur **Hierarchical Model-View-Controller** — scalable, terorganisir, dan siap produksi.
+
+<br/>
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/70e8d1aef6e242db918276498ad724f5)](https://app.codacy.com/app/N3Cr0N/CodeIgniter-HMVC?utm_source=github.com&utm_medium=referral&utm_content=N3Cr0N/CodeIgniter-HMVC&utm_campaign=Badge_Grade_Dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/n3cr0n/codeigniter-hmvc/badge)](https://www.codefactor.io/repository/github/n3cr0n/codeigniter-hmvc)
+![PHP](https://img.shields.io/badge/PHP-5.6%20%7C%207.x-777BB4?style=flat-square&logo=php&logoColor=white)
+![CodeIgniter](https://img.shields.io/badge/CodeIgniter-3.1.10-EF4223?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-# Codeigniter-HMVC1
-CodeIgniter 3.1.10 with HMVC (With PHP backward functions for each() and list() and code optimisations -> https://github.com/N3Cr0N/HMVC) and Whoops Error Handling Framework -> https://github.com/filp/whoops
+[Features](#-fitur-utama) · [Quick Start](#-quick-start) · [HMVC Guide](#-hmvc-modular-extensions) · [Whoops](#-whoops-error-handler) · [FAQ](#-faq)
 
-# Modular Extensions - HMVC
+</div>
 
-Modular Extensions makes the CodeIgniter PHP framework modular. Modules are groups of independent components, typically model, controller and view, arranged in an application modules sub-directory that can be dropped into other CodeIgniter applications.
+---
 
-HMVC stands for Hierarchical Model View Controller.
+## 📋 Daftar Isi
 
-Module Controllers can be used as normal Controllers or HMVC Controllers and they can be used as widgets to help you build view partials.
+- [Tentang Proyek](#-tentang-proyek)
+- [Tech Stack](#-tech-stack)
+- [Struktur Modul](#-struktur-modul)
+- [Fitur Utama](#-fitur-utama)
+- [Quick Start](#-quick-start)
+- [HMVC — Modular Extensions](#-hmvc-modular-extensions)
+- [Whoops Error Handler](#-whoops-error-handler)
+- [FAQ](#-faq)
+- [Persyaratan Server](#-persyaratan-server)
+- [Referensi](#-referensi)
 
-## Features:
+---
 
-All controllers can contain an $autoload class variable, which holds an array of items to load prior to running the constructor. This can be used together with module/config/autoload.php, however using the $autoload variable only works for that specific controller.
+## 📖 Tentang Proyek
+
+**SITAGUH v2** dibangun di atas **CodeIgniter 3.1.10** dengan dukungan **HMVC (Modular Extensions)** dan **Whoops** untuk error handling yang informatif.
+
+| Komponen | Deskripsi |
+|----------|-----------|
+| **CodeIgniter 3** | Framework PHP ringan & cepat |
+| **HMVC** | Modular Extensions — controller, model, view per modul |
+| **Whoops** | Error page yang cantik & mudah di-debug |
+| **PHP Backward Compat** | Dukungan `each()` & `list()` untuk PHP 5.6 / 7.x |
+
+> HMVC = **H**ierarchical **M**odel **V**iew **C**ontroller — modul independen yang bisa saling berkomunikasi tanpa request HTTP tambahan.
+
+```mermaid
+graph LR
+    subgraph Browser
+        REQ[HTTP Request]
+    end
+
+    subgraph "SITAGUH v2"
+        ROUTER[Router / MX]
+        subgraph Modules
+            FE[Frontend]
+            BE[Backend]
+            WC[Welcome]
+        end
+        WHOOPS[Whoops Handler]
+    end
+
+    REQ --> ROUTER
+    ROUTER --> FE
+    ROUTER --> BE
+    ROUTER --> WC
+    FE -.->|Modules::run| BE
+    BE -.->|Modules::run| FE
+    FE -->|Error| WHOOPS
+    BE -->|Error| WHOOPS
+```
+
+---
+
+## 🛠 Tech Stack
+
+<div align="center">
+
+| | Teknologi | Versi |
+|:---:|:---|:---:|
+| 🐘 | **PHP** | 5.6+ / 7.x |
+| 🔥 | **CodeIgniter** | 3.1.10 |
+| 🧩 | **HMVC (Modular Extensions)** | Latest |
+| 🛡️ | **Whoops** | ^2.5 |
+| 📦 | **Composer** | Required |
+
+</div>
+
+---
+
+## 📁 Struktur Modul
 
 ```
-<?php     
-class Xyz extends MX_Controller 
-{
-    $autoload = array(
-        'helper'    => array('url', 'form'),
-        'libraries' => array('email'),
-    );
-}
-
+sitaguhv2/
+├── application/
+│   ├── modules/
+│   │   ├── Frontend/     ← Modul tampilan publik
+│   │   ├── Backend/      ← Modul panel admin
+│   │   └── welcome/      ← Modul default
+│   ├── config/
+│   └── core/
+├── system/               ← CodeIgniter core
+├── vendor/               ← Composer dependencies (Whoops, dll.)
+└── index.php             ← Entry point
 ```
 
-The Modules::$locations array may be set in the application/config.php file. ie:
+---
 
+## ✨ Fitur Utama
+
+<table>
+<tr>
+<td width="50%">
+
+### 🧩 Modular Architecture
+Setiap fitur hidup di modul sendiri — controller, model, view, config, routes — siap dipindahkan antar proyek.
+
+### 🔗 HMVC Cross-Loading
+Modul bisa memanggil modul lain via `Modules::run()` tanpa request HTTP tambahan.
+
+</td>
+<td width="50%">
+
+### ⚡ Autoload per Controller
+Definisikan helper, library, dan model yang dimuat otomatis per controller.
+
+### 🎨 Whoops Debug UI
+Error page interaktif dengan stack trace, syntax highlight, dan buka file langsung di editor.
+
+</td>
+</tr>
+</table>
+
+---
+
+## ⚡ Quick Start
+
+### 1. Clone repository
+
+```bash
+git clone https://github.com/Syupyan/sitaguhv2.git
+cd sitaguhv2
 ```
+
+### 2. Install dependencies
+
+```bash
+composer install
+```
+
+### 3. Konfigurasi environment
+
+Salin dan sesuaikan file config di `application/config/{environment}/`:
+
+```bash
+# development | production | testing
+application/config/development/database.php
+application/config/development/config.php
+```
+
+### 4. Jalankan server
+
+```bash
+# XAMPP / Apache — arahkan DocumentRoot ke folder proyek
+# atau gunakan PHP built-in server:
+php -S localhost:8080
+```
+
+Buka browser: **http://localhost:8080**
+
+---
+
+## 🧩 HMVC — Modular Extensions
+
+Modular Extensions membuat CodeIgniter **modular**. Setiap modul berisi controller, model, dan view independen di sub-direktori `application/modules/`.
+
+Module Controllers dapat digunakan sebagai controller biasa, HMVC controller, atau **widget** untuk membangun view partials.
+
+### Konfigurasi Modul
+
+Tambahkan lokasi modul di `application/config/config.php`:
+
+```php
 <?php
 $config['modules_locations'] = array(
     APPPATH.'modules/' => '../modules/',
 );
-
 ```
 
-Modules::run() output is buffered, so any data returned or output directly from the controller is caught and returned to the caller. In particular, $this->load->view() can be used as you would in a normal controller, without the need for return.
+### Autoload di Controller
 
-Controllers can be loaded as class variables of other controllers using $this->load->module('module/controller'); or simply $this->load->module('module'); if the controller name matches the module name.
-
-Any loaded module controller can then be used like a library, ie: $this->controller->method(), but it has access to its own models and libraries independently from the caller.
-
-All module controllers are accessible from the URL via module/controller/method or simply module/method if the module and controller names match. If you add the _remap() method to your controllers you can prevent unwanted access to them from the URL and redirect or flag an error as you like.
-
-## Notes:
-
-To use HMVC functionality, such as Modules::run(), controllers must extend the MX_Controller class.
-
-To use Modular Separation only, without HMVC, controllers will extend the CodeIgniter Controller class.
-
-You must use PHP5 style constructors in your controllers. ie:
-
-
-```
+```php
 <?php
-class Xyz extends MX_Controller 
+class Xyz extends MX_Controller
+{
+    public $autoload = array(
+        'helper'    => array('url', 'form'),
+        'libraries' => array('email'),
+    );
+}
+```
+
+### Constructor (PHP5 Style)
+
+```php
+<?php
+class Xyz extends MX_Controller
 {
     function __construct()
     {
         parent::__construct();
     }
 }
-
 ```
 
-Constructors are not required unless you need to load or process something when the controller is first created.
+### Routing per Modul
 
-All MY_ extension libraries should include (require) their equivalent MX library file and extend their equivalent MX_ class
+Setiap modul dapat memiliki `config/routes.php`:
 
-Each module may contain a config/routes.php file where routing and a default controller can be defined for that module using:
-
-```
+```php
 <?php
 $route['module_name'] = 'controller_name';
-
 ```
-Controllers may be loaded from application/controllers sub-directories.
 
-Controllers may also be loaded from module/controllers sub-directories.
+### Memanggil Modul
 
-Resources may be cross loaded between modules. ie: $this->load->model('module/model');
+| Skenario | Syntax |
+|----------|--------|
+| Modul & controller berbeda | `Modules::run('module/controller/method', $params)` |
+| Nama sama, method bukan `index` | `Modules::run('module/method', $params)` |
+| Nama sama, method `index` | `Modules::run('module', $params)` |
+| Dari controller lain | `$this->load->module('module/controller')` |
+| Sebagai view partial | `<?php echo Modules::run('module/method', $param); ?>` |
 
-Modules::run() is designed for returning view partials, and it will return buffered output (a view) from a controller. The syntax for using modules::run is a URI style segmented string and unlimited variables.
+<details>
+<summary><strong>📌 Catatan Penting HMVC</strong></summary>
 
-```
+<br/>
+
+- Untuk HMVC (`Modules::run()`), controller **harus** extend `MX_Controller`
+- Untuk Modular Separation saja, extend `CI_Controller`
+- Semua library `MY_*` harus extend class `MX_*` yang setara
+- Controller bisa dimuat dari `application/controllers/` atau `module/controllers/`
+- Cross-load resource antar modul: `$this->load->model('module/model')`
+- Output `Modules::run()` di-buffer — `$this->load->view()` tidak perlu `return`
+- Load bahasa modul: `$this->load->language('language_file')`
+- Config: `$config = $this->load->config('config_file')`
+
+**Form Validation dengan MX:**
+
+```php
 <?php
-/** module and controller names are different, you must include the method name also, including 'index' **/
-modules::run('module/controller/method', $params, $...);
-
-/** module and controller names are the same but the method is not 'index' **/
-modules::run('module/method', $params, $...);
-
-/** module and controller names are the same and the method is 'index' **/
-modules::run('module', $params, $...);
-
-/** Parameters are optional, You may pass any number of parameters. **/
-
-```
-To call a module controller from within a controller you can use $this->load->module() or Modules::load() and PHP5 method chaining is available for any object loaded by MX. ie: $this->load->library(‘validation’)->run().
-
-To load languages for modules it is recommended to use the Loader method which will pass the active module name to the Lang instance; ie: $this->load->language('language_file');
-
-The PHP5 spl_autoload feature allows you to freely extend your controllers, models and libraries from application/core or application/libraries base classes without the need to specifically include or require them.
-
-The library loader has also been updated to accommodate some CI 1.7 features: ie Library aliases are accepted in the same fashion as model aliases, and loading config files from the module config directory as library parameters (re: form_validation.php) have beed added.
-
-$config = $this->load->config(‘config_file’), Returns the loaded config array to your variable.
-
-Models and libraries can also be loaded from sub-directories in their respective application directories.
-
-When using form validation with MX you will need to extend the CI_Form_validation class as shown below,
-
-```
-<?php
-/** application/libraries/MY_Form_validation **/ 
-class MY_Form_validation extends CI_Form_validation 
+// application/libraries/MY_Form_validation.php
+class MY_Form_validation extends CI_Form_validation
 {
     public $CI;
 }
-
 ```
-before assigning the current controller as the $CI variable to the form_validation library. This will allow your callback methods to function properly. (This has been discussed on the CI forums also).
 
-```
+```php
 <?php
-class Xyz extends MX_Controller 
+class Xyz extends MX_Controller
 {
     function __construct()
     {
         parent::__construct();
-
         $this->load->library('form_validation');
         $this->form_validation->CI =& $this;
     }
 }
-
 ```
 
-## View Partials
+</details>
 
-Using a Module as a view partial from within a view is as easy as writing:
+---
 
-```
-<?php echo Modules::run('module/controller/method', $param, $...); ?>
+## 🛡️ Whoops Error Handler
 
-```
-Parameters are optional, You may pass any number of parameters.
+<div align="center">
 
-## FAQ
+![Whoops Error Page](http://i.imgur.com/0VQpe96.png)
 
-**Q. What are modules, why should I use them?**
+*Pretty error interface untuk debugging yang lebih cepat*
 
-A. (http://en.wikipedia.org/wiki/Module)
+</div>
 
-(http://en.wikipedia.org/wiki/Modular_programming)
+**Whoops** adalah error handler framework untuk PHP — stack-based, fleksibel, dan mudah diintegrasikan.
 
-(http://blog.fedecarg.com/2008/06/28/a-modular-approach-to-web-development)
+### Fitur Whoops
 
-**Q. What is Modular HMVC, why should I use it?**
+| Fitur | Keterangan |
+|-------|------------|
+| 🔀 Stack-based handling | Error ditangani secara berlapis |
+| 📦 Stand-alone | Tanpa dependency wajib |
+| 🖥️ Pretty error page | UI debug yang informatif |
+| ✏️ Editor integration | Buka file langsung di IDE |
+| 📡 Multi-format | JSON, XML, SOAP handlers |
 
-A. Modular HMVC = Hierarchy of multiple MVC triads
+### Built-in Handlers
 
-This is most useful when you need to load a view and its data within a view. Think about adding a shopping cart to a page. The shopping cart needs its own controller which may call a model to get cart data. Then the controller needs to load the data into a view. So instead of the main controller handling the page and the shopping cart, the shopping cart MVC can be loaded directly in the page. The main controller doesn’t need to know about it, and is totally isolated from it.
+| Handler | Fungsi |
+|---------|--------|
+| [`PrettyPageHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/PrettyPageHandler.php) | Error page cantik untuk web |
+| [`PlainTextHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/PlainTextHandler.php) | Output plain text untuk CLI |
+| [`JsonResponseHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/JsonResponseHandler.php) | Response JSON untuk AJAX |
+| [`XmlResponseHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/XmlResponseHandler.php) | Response XML untuk AJAX |
+| [`CallbackHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/CallbackHandler.php) | Wrap closure sebagai handler |
 
-In CI we can’t call more than 1 controller per request. Therefore, to achieve HMVC, we have to simulate controllers. It can be done with libraries, or with this “Modular Extensions HMVC” contribution.
+> Dokumentasi lengkap: [github.com/filp/whoops](https://github.com/filp/whoops)
 
-The differences between using a library and a “Modular HMVC” HMVC class is:
+---
 
-1. No need to get and use the CI instance within an HMVC class 
-2. HMVC classes are stored in a modules directory as opposed to the libraries directory.
+## ❓ FAQ
 
-**Q. Is Modular Extensions HMVC the same as Modular Separation?**
+<details>
+<summary><strong>Apa itu modul, dan mengapa harus menggunakannya?</strong></summary>
 
-A. Yes and No. Like Modular Separation, Modular Extensions makes modules “portable” to other installations. For example, if you make a nice self-contained model-controller-view set of files you can bring that MVC into another project by copying just one folder - everything is in one place instead of spread around model, view and controller folders.
+<br/>
 
-Modular HMVC means modular MVC triads. Modular Separation and Modular Extensions allows related controllers, models, libraries, views, etc. to be grouped together in module directories and used like a mini application. But, Modular Extensions goes one step further and allows those modules to “talk” to each other. You can get controller output without having to go out through the http interface again.
+Modul adalah unit kode independen yang mengikuti prinsip **modular programming** — setiap fitur terisolasi, reusable, dan mudah di-maintain.
 
-# Whoops Error Handling Framework
+- [Module (Wikipedia)](http://en.wikipedia.org/wiki/Module)
+- [Modular Programming](http://en.wikipedia.org/wiki/Modular_programming)
+- [A Modular Approach to Web Development](http://blog.fedecarg.com/2008/06/28/a-modular-approach-to-web-development)
 
-![Whoops!](http://i.imgur.com/0VQpe96.png)
+</details>
 
-**Whoops** is an error handler framework for PHP. Out-of-the-box, it provides a pretty
-error interface that helps you debug your web projects, but at heart it's a simple yet
-powerful stacked error handling system.
+<details>
+<summary><strong>Apa itu Modular HMVC?</strong></summary>
 
-**Features**
+<br/>
 
-- Flexible, stack-based error handling
-- Stand-alone library with (currently) no required dependencies
-- Simple API for dealing with exceptions, trace frames & their data
-- Includes a pretty rad error page for your webapp projects
-- Includes the ability to [open referenced files directly in your editor and IDE](https://github.com/filp/whoops/blob/master/docs/Open%20Files%20In%20An%20Editor.md)
-- Includes handlers for different response formats (JSON, XML, SOAP)
-- Easy to extend and integrate with existing libraries
-- Clean, well-structured & tested code-base
+**Modular HMVC** = Hierarchy of multiple MVC triads.
 
-### Available Handlers
+Berguna saat Anda perlu memuat view beserta datanya **di dalam view lain**. Contoh: shopping cart di halaman produk — cart punya controller, model, dan view sendiri, dimuat langsung tanpa melibatkan controller utama.
 
-**whoops** currently ships with the following built-in handlers, available in the `Whoops\Handler` namespace:
+Di CodeIgniter standar, hanya 1 controller per request. HMVC mensimulasikan multiple controller via **Modular Extensions**.
 
-- [`PrettyPageHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/PrettyPageHandler.php) - Shows a pretty error page when something goes pants-up
-- [`PlainTextHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/PlainTextHandler.php) - Outputs plain text message for use in CLI applications
-- [`CallbackHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/CallbackHandler.php) - Wraps a closure or other callable as a handler. You do not need to use this handler explicitly, **whoops** will automatically wrap any closure or callable you pass to `Whoops\Run::pushHandler`
-- [`JsonResponseHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/JsonResponseHandler.php) - Captures exceptions and returns information on them as a JSON string. Can be used to, for example, play nice with AJAX requests.
-- [`XmlResponseHandler`](https://github.com/filp/whoops/blob/master/src/Whoops/Handler/XmlResponseHandler.php) - Captures exceptions and returns information on them as a XML string. Can be used to, for example, play nice with AJAX requests.
+| | Library | HMVC Class |
+|---|---------|------------|
+| CI instance | Perlu `$this` manual | Otomatis |
+| Lokasi | `libraries/` | `modules/` |
 
-You can also use pluggable handlers, such as [SOAP handler](https://github.com/whoops-php/soap).
+</details>
 
-## Whoops Authors
+<details>
+<summary><strong>Apakah Modular Extensions = Modular Separation?</strong></summary>
 
-This library was primarily developed by [Filipe Dobreira](https://github.com/filp), and is currently maintained by [Denis Sokolov](https://github.com/denis-sokolov). A lot of awesome fixes and enhancements were also sent in by [various contributors](https://github.com/filp/whoops/contributors). Special thanks to [Graham Campbell](https://github.com/GrahamCampbell) and [Markus Staab](https://github.com/staabm) for continuous participation.
+<br/>
 
-This software includes [Prettify](https://github.com/google/code-prettify), licensed under Apache License 2.0. It is bundled only as a performance optimization.
+**Ya dan tidak.**
 
-## Server Requirements
-- PHP version 5.6 or newer is recommended (We have include a backward function for each() and list() in HMVC, you can use PHP v5.6 or v7.2)
+Keduanya membuat modul **portable** — cukup copy satu folder modul ke proyek lain. Modular Extensions **melangkah lebih jauh**: modul bisa saling berkomunikasi dan mengembalikan output controller tanpa melalui HTTP.
 
-## Source HMVC Modular Extensions
-* [Wiredesignz](https://bitbucket.org/wiredesignz/codeigniter-modular-extensions-hmvc)
+</details>
 
-## Source Whoops Framework
-* [Whoops](https://github.com/filp/whoops)
+---
 
-## CodeIgniter 3 Documentation
+## 💻 Persyaratan Server
 
-* [User guide](https://codeigniter.com/user_guide)
+| Requirement | Detail |
+|-------------|--------|
+| **PHP** | 5.6 atau lebih baru (disarankan 7.x) |
+| **Web Server** | Apache / Nginx |
+| **Database** | MySQL / MariaDB (opsional, sesuaikan config) |
+| **Composer** | Untuk dependency management |
 
-## Reference
+> Proyek ini sudah include backward function untuk `each()` dan `list()` di HMVC — kompatibel PHP 5.6 & 7.2.
 
-* [CodeIgniter](https://github.com/bcit-ci/CodeIgniter)
-* [Translations for CodeIgniter System](https://github.com/bcit-ci/codeigniter3-translations)
+---
+
+## 📚 Referensi
+
+| Sumber | Link |
+|--------|------|
+| HMVC Modular Extensions | [Wiredesignz / Bitbucket](https://bitbucket.org/wiredesignz/codeigniter-modular-extensions-hmvc) |
+| Whoops Framework | [github.com/filp/whoops](https://github.com/filp/whoops) |
+| CodeIgniter 3 Docs | [codeigniter.com/user_guide](https://codeigniter.com/user_guide) |
+| CodeIgniter Source | [github.com/bcit-ci/CodeIgniter](https://github.com/bcit-ci/CodeIgniter) |
+| CI3 Translations | [github.com/bcit-ci/codeigniter3-translations](https://github.com/bcit-ci/codeigniter3-translations) |
+
+---
+
+<div align="center">
+
+**SITAGUH v2** · Built with CodeIgniter HMVC
+
+<br/>
+
+⭐ Star repo ini jika bermanfaat!
+
+</div>
